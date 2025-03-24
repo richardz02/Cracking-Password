@@ -127,6 +127,7 @@ int n_algs = 4;
 hashing fn[4] = {calculate_md5, calculate_sha1, calculate_sha256, calculate_sha512};
 char *algs[4] = {"MD5", "SHA1", "SHA256", "SHA512"};
 
+//FIXME: consider using memcmp for faster comparisons
 int compare_hashes(char *a, char *b) {
 	for(int i=0; i < 2*KEEP; i++)
 		if(a[i] != b[i])
@@ -249,7 +250,7 @@ void crack_hashed_passwords(char *password_list, char *hashed_list, char* output
         }
     }
 
-    // Destory the lock
+    // Destroy the lock
     pthread_mutex_destroy(&queue_lock);
 
     // print results
