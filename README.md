@@ -27,3 +27,18 @@ A better approach which I found is:
   - instead of one thread per hash function per password, create a share work queue
   - Each thread pulls a password from the queue, tries with all four hash algorithms, and compares
   - Only lock cracked_hashes when a match is found
+
+# Progress Update - 2
+For the second attempt at this assignment, I created a simple queue data structure, which we would fill in the password as we read the password file. This queue will act as a shared queue amongst the threads, and each thread will fetch a password at a time from the shared queue, compute hashes, and check for matches. This approach was able to achieve 2x speed up after testing. 
+
+# Progress Update - 3
+There are still a few issues with the previous approach that was slowing down the program: 
+- The frequent synchronization (use of locks) might be slowing down the program, since if multiple threads are trying to access the queue, then they would spend time waiting for one thread to finish fetching the password before another thread can proceed
+
+New approach:
+- Divide the password file evenly amongst the threads
+- Threads will independently process the chunk of password assigned to them
+
+Why is this approach optimal?
+- Reduced synchronization, reduce overhead from constantly locking and unlocking the shared queue when accessing it
+- Threads don't have to wait for another thread to finish fetching from the shared queue
