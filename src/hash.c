@@ -8,7 +8,6 @@
 
 #define KEEP 16 // only the first 16 bytes of a hash are kept
 #define MAX_PASSWORD_CHARACTER 256
-#define MAX_NUM_PASSWORD 999998
 #define NUM_THREADS 4
 
 pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
@@ -73,9 +72,9 @@ void* thread_crack_password(void* arg) {
                     break;
                 }
             }
+            free(hash);
         }
     }
-
     return NULL;
 }
 
@@ -105,9 +104,15 @@ void crack_hashed_passwords(char *password_list, char *hashed_list, char* output
 	fp = fopen(password_list, "r");
 	assert(fp != NULL);
 
-    char* passwords[MAX_NUM_PASSWORD];
+    char** passwords = NULL;
     int num_passwords = 0;
+    int capacity = 0;
 	while(fscanf(fp, "%s", password_buffer) == 1) {
+        if (num_passwords >= capacity) {
+            capacity = capacity == 0 ? 1024 : capacity * 2; // Initial size 1024, then double as needed
+            passwords = (char **)realloc(passwords, capacity * sizeof(char *));
+            assert(passwords != NULL);
+        }
         passwords[num_passwords] = strdup(password_buffer);
         num_passwords++;
 	}
