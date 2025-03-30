@@ -205,7 +205,7 @@ void crack_hashed_passwords(char *password_list, char *hashed_list, char* output
 	char password_buffer[MAX_PASSWORD_CHARACTER];  // passwords have at most 255 characters
 	char hex_hash[2*KEEP+1]; // hashed passwords have at most 'keep' characters
 
-    // Read hashes from hashed list
+  // Read hashes from hashed list
 	int n_hashed = 0;
 	struct cracked_hash *cracked_hashes;
 	fp = fopen(hashed_list, "r");
@@ -272,7 +272,7 @@ void crack_hashed_passwords(char *password_list, char *hashed_list, char* output
         pthread_join(th[i], NULL);
     }
 
-    // Write final results to output file
+  // Write final results to output file
 	fp = fopen(output, "w");
 	assert(fp != NULL);
 	for(int i=0; i < n_hashed; i++) {
@@ -282,7 +282,7 @@ void crack_hashed_passwords(char *password_list, char *hashed_list, char* output
 			fprintf(fp, "%s:%s\n", cracked_hashes[i].password, cracked_hashes[i].alg);
 	}
 	fclose(fp);
-
+  
 	// Clean up allocated resources
     for (int i = 0; i < num_passwords; i++) {
         free(passwords[i]);
